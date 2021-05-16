@@ -5,20 +5,35 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+List _features ;
+
 main() async {
   Map _quakeData = await getQuakes();
 
-  List _features = _quakeData['features'];
+  _features = _quakeData['features'];
 
   //print("${_quakeData['features'][0]['properties']['time']}");
 
   runApp(MaterialApp(
-    home: Scaffold(
+      home:Quakes()
+  ));
+}
+
+class Quakes extends StatefulWidget{
+  @override
+  _Quakesstate createState() => _Quakesstate();
+
+}
+
+class _Quakesstate extends State<Quakes> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
       appBar: AppBar(
         title: Text("Quakes"),
         backgroundColor: Colors.blueGrey[400],
       ),
-      body: Center(
+      body: RefreshIndicator(
         child: ListView.builder(
             itemCount: _features.length,
             padding: const EdgeInsets.all(15),
@@ -67,9 +82,16 @@ main() async {
                 ],
               );
             }),
-      ),
-    ),
-  ));
+        onRefresh: () {
+          return Future.delayed(
+          Duration(seconds: 1),
+          () {setState(() {});}
+          );
+        }
+      )
+    );
+  }
+
 }
 
 showMessageDialog(BuildContext context, String message) {
